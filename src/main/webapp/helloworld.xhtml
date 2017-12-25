@@ -2,14 +2,66 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:p="http://primefaces.org/ui">
-
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
 <h:head>
 	<title>PrimeFaces Hello World Example</title>
+	 <h:head>    	
+		<f:facet name="last">
+			<link rel="stylesheet" type="text/css" 
+				href="#{facesContext.externalContext.requestContextPath}/css/style.css" />
+		</f:facet>
+    </h:head>
 </h:head>
 
 <h:body>
-	<h:form>
+<h:form>
+
+		<h:outputLink value="javascript:void(0)" onclick="PF('dlg').show();"
+			title="login">
+			<p:commandButton value="Se Connecter" id="ajax" update="growl"
+				styleClass="centered" />
+		</h:outputLink>
+
+		<p:growl id="growl" sticky="true" showDetail="true" life="3000" />
+
+		<p:dialog header="Login" widgetVar="dlg" resizable="false">
+			<h:panelGrid columns="2" cellpadding="5">
+				<h:outputLabel for="username" value="Username:" />
+				<p:inputText id="username" value="#{nurseBean.nurse.nom}"
+					required="true" label="username" />
+
+				<h:outputLabel for="password" value="Password:" />
+				<p:password id="password" value="#{nurseBean.nurse.prenom}"
+					required="true" label="password" />
+
+				<f:facet name="footer">
+					<p:commandButton value="Login" update="growl"
+						actionListener="#{nurseBean.login}"
+						oncomplete="handleLoginRequest(xhr, status, args)" />
+				</f:facet>
+			</h:panelGrid>
+		</p:dialog>
+	</h:form>
+
+	<script type="text/javascript">
+		function handleLoginRequest(xhr, status, args) {
+			if (args.validationFailed || !args.loggedIn) {
+				PF('dlg').jq.effect("shake", {
+					times : 5
+				}, 100);
+			} else {
+				PF('dlg').hide();
+				$('#loginLink').fadeOut();
+			}
+		}
+	</script>
+
+</h:body>
+
+
+</html>
+<!-- 	<h:form>
 		<p:panel header="Formulaire de connexion">
 			<h:panelGrid columns="2" cellpadding="4">
 				<h:outputText value="First Name: " />
@@ -18,7 +70,7 @@
 				<h:outputText value="Last Name: " />
 				<p:inputText value="#{nurseBean.nurse.prenom}" />
 
-				<p:commandButton value="Submit"
+				<p:commandButton value="Submit" action="home?faces-redirect=true"
 					actionListener="#{nurseBean.connexionPersistenceNurse()}" />
 			</h:panelGrid>
 		</p:panel>
@@ -31,11 +83,8 @@
 				<h:outputText value="Last Name: " />
 				<p:inputText value="#{nurseBean.nurse.prenom}" />
 
-				<p:commandButton value="Submite"
+				<p:commandButton value="Submit"
 					actionListener="#{nurseBean.addPersistenceNurse()}" />
 			</h:panelGrid>
 		</p:panel>
-
-	</h:form>
-</h:body>
-</html>
+ -->
