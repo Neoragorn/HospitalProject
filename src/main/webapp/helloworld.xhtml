@@ -1,36 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:h="http://java.sun.com/jsf/html"
-    xmlns:p="http://primefaces.org/ui">
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
 
 <h:head>
-    <title>PrimeFaces Hello World Example</title>
+	<title>PrimeFaces Hello World Example</title>
 </h:head>
 
 <h:body>
-    <h:form>
+	<h:form>
+		<p:panel header="Formulaire de connexion">
+			<h:panelGrid columns="2" cellpadding="4">
+				<h:outputText value="First Name: " />
+				<p:inputText value="#{nurseBean.nurse.nom}" />
 
-        <p:panel header="Formulaire de connection">
-            <h:panelGrid columns="2" cellpadding="4">
-                <h:outputText value="First Name: " />
-                <p:inputText value="#{helloWorld.firstName}" />
+				<h:outputText value="Last Name: " />
+				<p:inputText value="#{nurseBean.nurse.prenom}" />
 
-                <h:outputText value="Last Name: " />
-                <p:inputText value="#{helloWorld.lastName}" />
+				<p:commandButton value="Submit"
+					actionListener="#{nurseBean.connexionPersistenceNurse()}" />
+			</h:panelGrid>
+		</p:panel>
 
-                <p:commandButton value="Submit" update="greeting"
-                    oncomplete="PF('greetingDialog').show()" />
-            </h:panelGrid>
-        </p:panel>
+		<p:panel header="Formulaire d'ajout d'infirmiers">
+			<h:panelGrid columns="2" cellpadding="4">
+				<h:outputText value="First Name: " />
+				<p:inputText value="#{nurseBean.nurse.nom}" />
 
-        <p:dialog header="Greeting" widgetVar="greetingDialog"
-            modal="true" resizable="false">
-            <h:panelGrid id="greeting" columns="1" cellpadding="4">
-                <h:outputText value="#{helloWorld.showGreeting()}" />
-            </h:panelGrid>
-        </p:dialog>
+				<h:outputText value="Last Name: " />
+				<p:inputText value="#{nurseBean.nurse.prenom}" />
 
-    </h:form>
+				<p:commandButton value="Submite"
+					actionListener="#{nurseBean.addPersistenceNurse()}" />
+			</h:panelGrid>
+		</p:panel>
+
+	</h:form>
 </h:body>
 </html>

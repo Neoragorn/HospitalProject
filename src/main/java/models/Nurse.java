@@ -15,10 +15,10 @@ public class Nurse implements Serializable{
 
 	private String nom;
 	private String prenom;
-	private String personalId;
+	private int personalId = 0;
 	
 	
-	public Nurse(int id, String nom, String prenom, String personalId) {
+	public Nurse(int id, String nom, String prenom, int personalId) {
 		super();
 		this.id = id;
 		this.nom = nom;
@@ -49,12 +49,13 @@ public class Nurse implements Serializable{
 	public void setPrenom(String prenom) {
 		this.prenom = prenom;
 	}
-	public String getPersonalId() {
+
+	public int getPersonalId() {
 		return personalId;
 	}
-	public void setPersonalId(String personalId) {
+
+	public void setPersonalId(int personalId) {
 		this.personalId = personalId;
-	}	
-	
+	}
 	
 }
