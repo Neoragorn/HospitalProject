@@ -22,6 +22,16 @@ public class Patient implements Serializable {
 	private Date dateNaissance;
 	private int age;
 	
+	public Patient(int id, String nom, String prenom) {
+		this.id = id;
+		this.nom = nom;
+		this.prenom = prenom;
+	}
+	
+	public Patient(String nom, String prenom) {
+		this.nom = nom;
+		this.prenom = prenom;
+	}
 	
 	public Patient() {
 

@@ -9,11 +9,165 @@
 	<title>PrimeFaces Hello World Example</title>
 	<f:event type="preRenderView" listener="#{homeBean.init}" />
 </h:head>
-
+	 
 <h:body>
 
-	<p:growl id="growl"  />	
-	<p> Here's the home page</p>
+<h:form>
+    <p:growl id="messages" showDetail="true" />
+ 
+    <h:panelGrid columnClasses="value">
+        <h3 style="margin-top: 0">Patient of the OR Schedule</h3>
+        <p:schedule id="schedule" value="#{scheduleView.eventModel}" widgetVar="myschedule" timeZone="GMT+2">
+ 
+            <p:ajax event="dateSelect" listener="#{scheduleView.onDateSelect}" update="eventDetails" oncomplete="PF('eventDialog').show();" />
+            <p:ajax event="eventSelect" listener="#{scheduleView.onEventSelect}" update="eventDetails" oncomplete="PF('eventDialog').show();" />
+            <p:ajax event="eventMove" listener="#{scheduleView.onEventMove}" update="messages" />
+            <p:ajax event="eventResize" listener="#{scheduleView.onEventResize}" update="messages" />
+ 
+        </p:schedule>
+ 
+    </h:panelGrid>
+ 
+    <p:dialog widgetVar="eventDialog" header="Event Details" showEffect="clip" hideEffect="clip">
+        <h:panelGrid id="eventDetails" columns="2">
+            <p:outputLabel for="title" value="Titles:" />
+            <p:inputText id="title" value="#{scheduleView.event.title}" required="true" />
+ 
+            <p:outputLabel for="from" value="From:" />
+            <p:calendar id="from" value="#{scheduleView.event.startDate}" timeZone="GMT+2" pattern="dd/MM/yyyy HH:mm"/>
+ 
+            <p:outputLabel for="to" value="To:" />
+            <p:calendar id="to" value="#{scheduleView.event.endDate}" timeZone="GMT+2" pattern="dd/MM/yyyy HH:mm"/>
+ 
+            <p:outputLabel for="allDay" value="All Day:" />
+            <h:selectBooleanCheckbox id="allDay" value="#{scheduleView.event.allDay}" />
+ 
+            <p:commandButton type="reset" value="Reset" />
+            <p:commandButton id="addButton" value="Save" actionListener="#{scheduleView.addEvent}" oncomplete="PF('myschedule').update();PF('eventDialog').hide();" />
+        </h:panelGrid>
+    </p:dialog>    
+</h:form>
+ 
+<script type="text/javascript">
+    PrimeFaces.locales['tr'] = {
+        closeText: 'kapat',
+        prevText: 'geri',
+        nextText: 'ileri',
+        currentText: 'bugün',
+        monthNames: ['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran',
+            'Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'],
+        monthNamesShort: ['Oca','Şub','Mar','Nis','May','Haz',
+            'Tem','Ağu','Eyl','Eki','Kas','Ara'],
+        dayNames: ['Pazar','Pazartesi','Salı','Çarşamba','Perşembe','Cuma','Cumartesi'],
+        dayNamesShort: ['Pz','Pt','Sa','Ça','Pe','Cu','Ct'],
+        dayNamesMin: ['Pz','Pt','Sa','Ça','Pe','Cu','Ct'],
+        weekHeader: 'Hf',
+        firstDay: 1,
+        isRTL: false,
+        showMonthAfterYear: false,
+        yearSuffix: '',
+        month: 'Ay',
+        week: 'Hafta',
+        day: 'Gün',
+        allDayText : 'Tüm Gün'
+    };
+</script>
+<style type="text/css">
+    .value {
+        width: 1000px;
+    }
+</style>
 
+<script type="text/javascript">
+    function handleDrop(event, ui) {
+        var droppedCar = ui.draggable;
+ 
+        droppedCar.fadeOut('fast');
+    }
+</script>
+ 
+<h:form id="carForm">
+    <p:fieldset id="availableCarsField" legend="Available Cars">
+        <p:dataTable id="availableCars" var="car" value="#{dndCarsView.cars}">
+            <p:column style="width:20px">
+                <h:outputText id="dragIcon" styleClass="ui-icon ui-icon-arrow-4" />
+                <p:draggable for="dragIcon" revert="true" helper="clone"/>
+            </p:column>
+ 
+            <p:column headerText="Id">
+                <h:outputText value="#{car.id}" />
+            </p:column>
+ 
+            <p:column headerText="Year">
+                <h:outputText value="#{car.year}" />
+            </p:column>
+ 
+            <p:column headerText="Brand">
+                <h:outputText value="#{car.brand}" />
+            </p:column>
+ 
+            <p:column headerText="Color">
+                <h:outputText value="#{car.color}" />
+            </p:column>
+        </p:dataTable>
+    </p:fieldset>
+ 
+    <p:fieldset id="selectedCars" legend="Selected Cars BABY" style="margin-top:20px">
+        <p:outputPanel id="dropArea">
+            <h:outputText value="!!!Drop here!!!" rendered="#{empty dndCarsView.droppedCars}" style="font-size:24px;" />
+            <p:dataTable id="selectedCarsTable" var="car" value="#{dndCarsView.droppedCars}" rendered="#{not empty dndCarsView.droppedCars}">
+                <p:column headerText="Id">
+                    <h:outputText value="#{car.id}" />
+                </p:column>
+ 
+                <p:column headerText="Year">
+                    <h:outputText value="#{car.year}" />
+                </p:column>
+ 
+                <p:column headerText="Brand">
+                    <h:outputText value="#{car.brand}" />
+                </p:column>
+ 
+                <p:column headerText="Color">
+                    <h:outputText value="#{car.color}" />
+                </p:column>
+ 
+                <p:column style="width:32px">
+                    <p:commandButton update=":carForm:display" oncomplete="PF('carDialog').show()" icon="ui-icon-search">
+                        <f:setPropertyActionListener value="#{car}" target="#{dndCarsView.selectedCar}" />
+                    </p:commandButton>
+                </p:column>
+            </p:dataTable>
+        </p:outputPanel>
+    </p:fieldset>
+ 
+    <p:droppable for="selectedCars" tolerance="touch" activeStyleClass="ui-state-highlight" datasource="availableCars" onDrop="handleDrop">
+        <p:ajax listener="#{dndCarsView.onCarDrop}" update="dropArea availableCars" />
+    </p:droppable>
+ 
+    <p:dialog header="Car Detail" widgetVar="carDialog" resizable="false" draggable="false"
+                showEffect="fade" hideEffect="fade" modal="true">
+ 
+        <p:outputPanel id="display">
+            <h:panelGrid columns="2" cellpadding="4" rendered="#{not empty dndCarsView.selectedCar}">
+                <f:facet name="header">
+                    <p:graphicImage name="demo/images/car/#{dndCarsView.selectedCar.brand}.gif"/>
+                </f:facet>
+ 
+                <h:outputText value="Id:" />
+                <h:outputText value="#{dndCarsView.selectedCar.id}" style="font-weight:bold"/>
+ 
+                <h:outputText value="Year:" />
+                <h:outputText value="#{dndCarsView.selectedCar.year}" style="font-weight:bold"/>
+ 
+                <h:outputText value="Brand:" />
+                <h:outputText value="#{dndCarsView.selectedCar.brand}" style="font-weight:bold"/>
+ 
+                <h:outputText value="Color:" />
+                <h:outputText value="#{dndCarsView.selectedCar.color}" style="font-weight:bold"/>
+            </h:panelGrid>
+        </p:outputPanel>
+    </p:dialog>
+</h:form>
 </h:body>
 </html>
